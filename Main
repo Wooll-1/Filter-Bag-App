@@ -967,7 +967,7 @@ ${calculateAdditionalPieces().scuffbandPiece.includes("required") ? '' : `Scuff 
             instructionsList.innerHTML = '';
             
             const steps = [
-                { number: 1, title: "Material Preparation", description: `Select ${materialType} material and verify specifications` },
+                { number: 1, title: "Material Preparation", description: `Check material against works order & batch` },
                 { number: 2, title: "Cutting Operation", description: "Cut pieces according to cutting instructions" }
             ];
             
@@ -975,23 +975,8 @@ ${calculateAdditionalPieces().scuffbandPiece.includes("required") ? '' : `Scuff 
             if (includeBase) {
                 steps.push({ 
                     number: steps.length + 1, 
-                    title: "Base Preparation", 
+                    title: "Cut Base", 
                     description: "Cut circular base piece to specified diameter" 
-                });
-            }
-            
-            steps.push({ 
-                number: steps.length + 1, 
-                title: "Sewing Process", 
-                description: "Assemble main panel with seam allowance" 
-            });
-            
-            // Add base assembly if included
-            if (includeBase) {
-                steps.push({ 
-                    number: steps.length + 1, 
-                    title: "Base Attachment", 
-                    description: "Sew circular base to bottom of main panel" 
                 });
             }
             
@@ -1000,15 +985,21 @@ ${calculateAdditionalPieces().scuffbandPiece.includes("required") ? '' : `Scuff 
                 steps.push({ 
                     number: steps.length + 1, 
                     title: "Snapband Installation", 
-                    description: "Attach stainless steel snapband with profile tape" 
+                    description: "Apply specified profile tape to stainless steel snapband" 
                 });
             }
             
-            if (selectedComponents.includes("Garter Spring")) {
+            steps.push({ 
+                number: steps.length + 1, 
+                title: "Sewing Process", 
+                description: "P/Fell down the length of the body" 
+            });
+            
+            if (selectedComponents.includes("Snapband")) {
                 steps.push({ 
                     number: steps.length + 1, 
-                    title: "Cuff Assembly", 
-                    description: "Sew garter spring cuff to main panel" 
+                    title: "Snapband Hem", 
+                    description: "Create a 5cm external hem and sew down with 2 rows of C/Arm twin" 
                 });
             }
             
@@ -1020,13 +1011,35 @@ ${calculateAdditionalPieces().scuffbandPiece.includes("required") ? '' : `Scuff 
                 });
             }
             
-            if (selectedFeatures.includes("Double Base")) {
+             if (selectedFeatures.includes("Double Base")) {
                 steps.push({ 
                     number: steps.length + 1, 
                     title: "Double Base Construction", 
                     description: "Assemble double-layer base with reinforced stitching" 
                 });
             }
+            
+            // Add base assembly if included
+            if (includeBase) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Base Attachment", 
+                    description: "Twin in base" 
+                });
+            }
+            
+            
+            
+            if (selectedComponents.includes("Garter Spring")) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Cuff Assembly", 
+                    description: "Sew garter spring cuff to main panel" 
+                });
+            }
+            
+            
+           
             
             // Add final steps
             steps.push(
