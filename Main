@@ -893,8 +893,8 @@
         
         // Calculate base diameter
         function calculateBaseDiameter(panelWidth) {
-            // Base diameter = Panel Width / π
-            return panelWidth / Math.PI;
+            // Base diameter = Panel Width / π + 20
+            return panelWidth / Math.PI + 20;
         }
         
         // Calculate additional pieces
