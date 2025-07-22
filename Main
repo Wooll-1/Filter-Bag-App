@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... existing head content ... -->
+    <style>
+        /* ... existing styles ... */
+    </style>
+</head>
+<body>
+    <!-- ... existing body content ... -->
+    
+    <!-- Calculations Tab -->
+    <div class="tab-content" id="calculations-tab">
+        <div class="form-section">
+            <h3><i class="fas fa-calculator"></i> Manufacturing Calculations</h3>
+            <p>Precise calculations for filtration bag manufacturing</p>
+            
+            <div class="formula-display">
+                <strong>Calculation Formulas:</strong><br>
+                Panel Width = (Input Width × 2) + 20mm<br>
+                Base Diameter = (Panel Width / π) + 20mm  <!-- CHANGED FORMULA -->
+                Scuff Band = Input Scuff Length × Panel Width + 0.5mm<br>
+                Garter Spring Cuff = 150mm × Panel Width + 0.5mm
+            </div>
+            
+            <div class="calculation-results">
+                <h3><i class="fas fa-cut"></i> Cutting Dimensions</h3>
+                <div class="result-grid">
+                    <!-- ... other result cards ... -->
+                    <div class="result-card" id="base-diameter-card">
+                        <h4><i class="fas fa-circle"></i> Base Diameter</h4>
+                        <div class="result-value" id="base-diameter">Calculating...</div>
+                        <div class="result-label">(Panel Width / π) + 20mm</div>  <!-- UPDATED LABEL -->
+                    </div>
+                    <!-- ... other result cards ... -->
+                </div>
+                
+                <!-- ... base visual ... -->
+            </div>
+            
+            <!-- ... additional pieces section ... -->
+        </div>
+    </div>
+    
+    <!-- ... rest of the HTML ... -->
+    
+    <script>
+        // ... existing JavaScript ...
+        
+        // Update calculateBaseDiameter function
+        function calculateBaseDiameter(panelWidth) {
+            // Base diameter = (Panel Width / π) + 20mm
+            return (panelWidth / Math.PI) + 20;  // ADDED 20mm
+        }
+        
+        // ... rest of the JavaScript ...
+    </script>
+</body>
+</html>
