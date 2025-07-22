@@ -1,59 +1,1167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... existing head content ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtration Bag Designer with Base Calculation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ... existing styles ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --primary-light: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #e67e22;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #ecf0f1;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+        
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        header h1:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 20px auto 0;
+            color: var(--text-light);
+        }
+        
+        .app-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 18px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-light);
+            position: relative;
+            font-size: 1rem;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            font-weight: 600;
+            background: rgba(44, 62, 80, 0.05);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-section h3 {
+            margin-bottom: 22px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            gap: 12px;
+        }
+        
+        .form-section h3 i {
+            color: var(--accent);
+            background: rgba(52, 152, 219, 0.1);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group input, 
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        
+        .input-group input:focus, 
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .feature-item:hover {
+            border-color: var(--accent);
+        }
+        
+        .feature-item.selected {
+            background: rgba(52, 152, 219, 0.05);
+            border-color: var(--accent);
+        }
+        
+        .feature-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .feature-item label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        
+        .component-card {
+            background: var(--card-bg);
+            border-radius: 6px;
+            padding: 20px 15px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .component-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+        
+        .component-card.selected {
+            background: rgba(52, 152, 219, 0.05);
+            border-color: var(--accent);
+        }
+        
+        .component-card i {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 14px;
+        }
+        
+        .component-card h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+        
+        .component-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        
+        .preview-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-top: 35px;
+            border: 1px solid var(--border);
+        }
+        
+        .preview-container h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-content {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+            overflow: auto;
+            max-height: 500px;
+        }
+        
+        .calculation-results {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-top: 25px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-card {
+            padding: 20px;
+            border-radius: var(--radius);
+            background: rgba(52, 152, 219, 0.05);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .result-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .instruction-step {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-content h4 {
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        .step-content p {
+            color: var(--text-light);
+        }
+        
+        .scuffband-input {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 6px;
+            border: 1px dashed var(--accent);
+        }
+        
+        .formula-display {
+            background: rgba(231, 126, 34, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: monospace;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .dimension-notice {
+            background: rgba(46, 204, 113, 0.1);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--success);
+        }
+        
+        .base-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .circle-base {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.1);
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .circle-base:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .circle-base:after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .diameter-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        footer {
+            text-align: center;
+            color: var(--text-light);
+            padding: 30px 20px 20px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .features-grid,
+            .components-grid,
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 15px;
+            }
+            
+            .preview-content {
+                padding: 18px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- ... existing body content ... -->
-    
-    <!-- Calculations Tab -->
-    <div class="tab-content" id="calculations-tab">
-        <div class="form-section">
-            <h3><i class="fas fa-calculator"></i> Manufacturing Calculations</h3>
-            <p>Precise calculations for filtration bag manufacturing</p>
-            
-            <div class="formula-display">
-                <strong>Calculation Formulas:</strong><br>
-                Panel Width = (Input Width × 2) + 20mm<br>
-                Base Diameter = (Panel Width / π) + 20mm  <!-- CHANGED FORMULA -->
-                Scuff Band = Input Scuff Length × Panel Width + 0.5mm<br>
-                Garter Spring Cuff = 150mm × Panel Width + 0.5mm
+    <div class="container">
+        <header>
+            <h1>Filtration Bag Designer</h1>
+            <p>Complete design tool with base calculation for tubular bags</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="design">Design</div>
+                <div class="tab" data-tab="calculations">Calculations</div>
+                <div class="tab" data-tab="instructions">Work Instructions</div>
             </div>
             
-            <div class="calculation-results">
-                <h3><i class="fas fa-cut"></i> Cutting Dimensions</h3>
-                <div class="result-grid">
-                    <!-- ... other result cards ... -->
-                    <div class="result-card" id="base-diameter-card">
-                        <h4><i class="fas fa-circle"></i> Base Diameter</h4>
-                        <div class="result-value" id="base-diameter">Calculating...</div>
-                        <div class="result-label">(Panel Width / π) + 20mm</div>  <!-- UPDATED LABEL -->
+            <div class="tab-content active" id="design-tab">
+                <div class="form-section">
+                    <h3><i class="fas fa-cube"></i> Part Information</h3>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="part-name"><i class="fas fa-tag"></i> Part Name</label>
+                            <input type="text" id="part-name" placeholder="e.g. Industrial Filter Bag 300mm" value="Industrial Dust Bag">
+                        </div>
+                        <div class="input-group">
+                            <label for="part-id"><i class="fas fa-barcode"></i> Part ID</label>
+                            <input type="text" id="part-id" placeholder="e.g. DB-300-A" value="DB-300-01">
+                        </div>
                     </div>
-                    <!-- ... other result cards ... -->
                 </div>
                 
-                <!-- ... base visual ... -->
+                <div class="form-section">
+                    <h3><i class="fas fa-ruler-combined"></i> Dimensions</h3>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="width"><i class="fas fa-arrows-alt-h"></i> Width (mm)</label>
+                            <input type="number" id="width" min="50" max="1000" step="1" value="300">
+                        </div>
+                        <div class="input-group">
+                            <label for="length"><i class="fas fa-arrows-alt-v"></i> Length (mm)</label>
+                            <input type="number" id="length" min="100" max="3000" step="10" value="1200">
+                        </div>
+                        <div class="input-group">
+                            <label for="cell-plate"><i class="fas fa-border-style"></i> Cell Plate Size (mm)</label>
+                            <input type="number" id="cell-plate" min="10" max="500" step="1" value="150">
+                        </div>
+                        <div class="input-group">
+                            <label for="tolerance"><i class="fas fa-plus-minus"></i> Tolerance (± mm)</label>
+                            <input type="number" id="tolerance" min="0.1" max="5" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                    <div class="dimension-notice">
+                        <i class="fas fa-info-circle"></i> Panel Width = (Input Width × 2) + 20mm
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-layer-group"></i> Material</h3>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="material-type"><i class="fas fa-fill-drip"></i> Material Type</label>
+                            <select id="material-type">
+                                <option value="polyester">Polyester Needle Felt</option>
+                                <option value="polypropylene">Polypropylene Needle Felt</option>
+                                <option value="homopolymer">Homopolymers Acrylic</option>
+                                <option value="aramid">Aramid Fiber</option>
+                                <option value="ptfe">PTFE Membrane</option>
+                                <option value="other">Other Material</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="material-weight"><i class="fas fa-weight-hanging"></i> Weight (g/m²)</label>
+                            <input type="number" id="material-weight" min="100" max="1000" step="10" value="500">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-cogs"></i> Hardware Components</h3>
+                    <p>Select all components needed for this bag:</p>
+                    <div class="components-grid">
+                        <div class="component-card" data-component="snapband">
+                            <i class="fas fa-ring"></i>
+                            <h4>Stainless Steel Snapband with Profile Tape</h4>
+                            <p>Top closure system with sealing profile</p>
+                        </div>
+                        <div class="component-card" data-component="garter">
+                            <i class="fas fa-spring"></i>
+                            <h4>Garter Spring</h4>
+                            <p>Tension component for secure fit</p>
+                        </div>
+                        <div class="component-card" data-component="prosnap">
+                            <i class="fas fa-circle-notch"></i>
+                            <h4>Prosnap Ring</h4>
+                            <p>Standard connection ring</p>
+                        </div>
+                        <div class="component-card" data-component="felt">
+                            <i class="fas fa-circle"></i>
+                            <h4>Felt Ring</h4>
+                            <p>Sealing component for high-temperature models</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-sliders-h"></i> Additional Features</h3>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <input type="checkbox" id="scuffband" class="feature-checkbox">
+                            <label for="scuffband">Scuffband</label>
+                        </div>
+                        <div class="feature-item">
+                            <input type="checkbox" id="liquid-repellant" class="feature-checkbox">
+                            <label for="liquid-repellant">Liquid Repellant</label>
+                        </div>
+                        <div class="feature-item">
+                            <input type="checkbox" id="antistatic" class="feature-checkbox">
+                            <label for="antistatic">Antistatic</label>
+                        </div>
+                        <div class="feature-item">
+                            <input type="checkbox" id="double-base" class="feature-checkbox">
+                            <label for="double-base">Double Base</label>
+                        </div>
+                        <div class="feature-item">
+                            <input type="checkbox" id="include-base" class="feature-checkbox" checked>
+                            <label for="include-base">Include Base</label>
+                        </div>
+                    </div>
+                    
+                    <div id="scuffband-input" class="scuffband-input">
+                        <div class="input-group">
+                            <label for="scuffband-length"><i class="fas fa-ruler"></i> Scuff Band Length (mm)</label>
+                            <input type="number" id="scuffband-length" min="50" max="1000" step="10" value="200">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="generate-btn">
+                        <i class="fas fa-calculator"></i> Calculate & Generate
+                    </button>
+                    <button class="btn btn-secondary" id="clear-btn">
+                        <i class="fas fa-eraser"></i> Clear Form
+                    </button>
+                </div>
             </div>
             
-            <!-- ... additional pieces section ... -->
+            <!-- Calculations Tab -->
+            <div class="tab-content" id="calculations-tab">
+                <div class="form-section">
+                    <h3><i class="fas fa-calculator"></i> Manufacturing Calculations</h3>
+                    <p>Precise calculations for filtration bag manufacturing</p>
+                    
+                    <div class="formula-display">
+                        <strong>Calculation Formulas:</strong><br>
+                        Panel Width = (Input Width × 2) + 20mm<br>
+                        Base Diameter = Panel Width / π<br>
+                        Scuff Band = Input Scuff Length × Panel Width + 0.5mm<br>
+                        Garter Spring Cuff = 150mm × Panel Width + 0.5mm
+                    </div>
+                    
+                    <div class="calculation-results">
+                        <h3><i class="fas fa-cut"></i> Cutting Dimensions</h3>
+                        <div class="result-grid">
+                            <div class="result-card">
+                                <h4><i class="fas fa-arrows-alt-h"></i> Panel Width</h4>
+                                <div class="result-value" id="panel-width">Calculating...</div>
+                                <div class="result-label">(Input Width × 2) + 20mm</div>
+                            </div>
+                            <div class="result-card">
+                                <h4><i class="fas fa-arrows-alt-v"></i> Panel Length</h4>
+                                <div class="result-value" id="panel-length">Calculating...</div>
+                                <div class="result-label">Based on selected hardware</div>
+                            </div>
+                            <div class="result-card" id="base-diameter-card">
+                                <h4><i class="fas fa-circle"></i> Base Diameter</h4>
+                                <div class="result-value" id="base-diameter">Calculating...</div>
+                                <div class="result-label">Panel Width / π</div>
+                            </div>
+                            <div class="result-card">
+                                <h4><i class="fas fa-crop-alt"></i> Cell Plate Size</h4>
+                                <div class="result-value" id="cell-plate-result">150 mm</div>
+                                <div class="result-label">As specified in design</div>
+                            </div>
+                        </div>
+                        
+                        <div class="base-visual">
+                            <div class="circle-base">
+                                <span>Base</span>
+                                <div class="diameter-label">Diameter: <span id="diameter-value">0</span>mm</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="calculation-results">
+                        <h3><i class="fas fa-tape"></i> Additional Pieces</h3>
+                        <div class="result-grid">
+                            <div class="result-card" id="garter-cuff-card">
+                                <h4><i class="fas fa-cut"></i> Garter Spring Cuff</h4>
+                                <div class="result-value" id="garter-cuff">Not required</div>
+                                <div class="result-label">150mm × Panel Width + 0.5mm</div>
+                            </div>
+                            <div class="result-card" id="scuffband-card">
+                                <h4><i class="fas fa-border-style"></i> Scuff Band</h4>
+                                <div class="result-value" id="scuffband-piece">Not required</div>
+                                <div class="result-label">Scuff Length × Panel Width + 0.5mm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Work Instructions Tab -->
+            <div class="tab-content" id="instructions-tab">
+                <div class="form-section">
+                    <h3><i class="fas fa-file-invoice"></i> Work Instructions</h3>
+                    <p>Complete manufacturing instructions for your bag design</p>
+                    
+                    <div class="preview-container">
+                        <h3><i class="fas fa-list-ol"></i> Manufacturing Process</h3>
+                        <div id="instructions-list">
+                            <!-- Instructions will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <h3><i class="fas fa-cut"></i> Cutting Instructions</h3>
+                        <div class="preview-content" id="cutting-instructions">
+                            // Cutting instructions will be generated here
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> Export as PDF
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-print"></i> Print Instructions
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <!-- ... rest of the HTML ... -->
-    
-    <script>
-        // ... existing JavaScript ...
         
-        // Update calculateBaseDiameter function
-        function calculateBaseDiameter(panelWidth) {
-            // Base diameter = (Panel Width / π) + 20mm
-            return (panelWidth / Math.PI) + 20;  // ADDED 20mm
+        <footer>
+            <p>Filtration Bag Designer &copy; 2023 | Precision Manufacturing Tool</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const scuffbandCheckbox = document.getElementById('scuffband');
+        const scuffbandInput = document.getElementById('scuffband-input');
+        const includeBaseCheckbox = document.getElementById('include-base');
+        
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Component selection functionality
+        document.querySelectorAll('.component-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+        
+        // Feature selection functionality
+        document.querySelectorAll('.feature-item').forEach(item => {
+            const checkbox = item.querySelector('input');
+            item.addEventListener('click', () => {
+                checkbox.checked = !checkbox.checked;
+                item.classList.toggle('selected', checkbox.checked);
+                
+                // Toggle scuffband input visibility
+                if (checkbox.id === 'scuffband') {
+                    scuffbandInput.style.display = checkbox.checked ? 'block' : 'none';
+                }
+            });
+        });
+        
+        // Initialize with scuffband hidden
+        scuffbandInput.style.display = 'none';
+        
+        // Calculate panel dimensions based on hardware
+        function calculatePanelDimensions() {
+            const width = parseFloat(document.getElementById('width').value) || 300;
+            const length = parseFloat(document.getElementById('length').value) || 1200;
+            
+            // Calculate panel width
+            const panelWidth = (width * 2) + 20;
+            
+            // Calculate panel length based on hardware
+            let panelLength = length;
+            let lengthNote = "No hardware selected";
+            
+            if (document.querySelector('.component-card[data-component="snapband"].selected')) {
+                panelLength = length + 65;
+                lengthNote = "Snapband: Length + 65mm";
+            }
+            else if (document.querySelector('.component-card[data-component="garter"].selected')) {
+                panelLength = length;
+                lengthNote = "Garter Spring: Length as-is";
+            }
+            else if (document.querySelector('.component-card[data-component="prosnap"].selected')) {
+                panelLength = length + 65;
+                lengthNote = "Prosnap: Length + 65mm";
+            }
+            else if (document.querySelector('.component-card[data-component="felt"].selected')) {
+                panelLength = length + 60;
+                lengthNote = "Felt Ring: Length + 60mm";
+            }
+            
+            return {
+                width: panelWidth,
+                length: panelLength,
+                lengthNote: lengthNote
+            };
         }
         
-        // ... rest of the JavaScript ...
+        // Calculate base diameter
+        function calculateBaseDiameter(panelWidth) {
+            // Base diameter = Panel Width / π
+            return panelWidth / Math.PI;
+        }
+        
+        // Calculate additional pieces
+        function calculateAdditionalPieces() {
+            const width = parseFloat(document.getElementById('width').value) || 300;
+            const scuffbandLength = parseFloat(document.getElementById('scuffband-length').value) || 200;
+            const hasScuffband = document.getElementById('scuffband').checked;
+            const hasGarter = document.querySelector('.component-card[data-component="garter"].selected');
+            
+            // Calculate panel width
+            const panelWidth = (width * 2) + 20;
+            
+            // Calculate pieces
+            const garterCuff = hasGarter ? `150mm × ${(panelWidth + 0.5).toFixed(1)}mm` : "Not required";
+            const scuffbandPiece = hasScuffband ? `${scuffbandLength}mm × ${(panelWidth + 0.5).toFixed(1)}mm` : "Not required";
+            
+            return { garterCuff, scuffbandPiece };
+        }
+        
+        // Generate work instructions
+        function generateWorkInstructions() {
+            const partName = document.getElementById('part-name').value || 'Industrial Dust Bag';
+            const width = document.getElementById('width').value || 300;
+            const length = document.getElementById('length').value || 1200;
+            const cellPlate = document.getElementById('cell-plate').value || 150;
+            const materialType = document.getElementById('material-type').options[document.getElementById('material-type').selectedIndex].text;
+            const includeBase = document.getElementById('include-base').checked;
+            
+            // Get panel dimensions
+            const panel = calculatePanelDimensions();
+            const baseDiameter = calculateBaseDiameter(panel.width);
+            
+            // Get selected components
+            const selectedComponents = Array.from(document.querySelectorAll('.component-card.selected'))
+                .map(card => card.querySelector('h4').textContent)
+                .join(', ');
+            
+            // Get selected features
+            const selectedFeatures = Array.from(document.querySelectorAll('.feature-checkbox:checked'))
+                .map(checkbox => checkbox.id !== 'include-base' ? checkbox.nextElementSibling.textContent : null)
+                .filter(text => text !== null)
+                .join(', ');
+            
+            // Generate cutting instructions
+            let cuttingInstructions = `=== CUTTING INSTRUCTIONS ===
+
+Main Panel:      ${panel.width.toFixed(1)}mm × ${panel.length.toFixed(1)}mm
+Cell Plate:      ${cellPlate}mm`;
+
+            if (includeBase) {
+                cuttingInstructions += `\nBase Circle:     Ø ${baseDiameter.toFixed(1)}mm`;
+            }
+
+            cuttingInstructions += `
+
+--- ADDITIONAL PIECES ---
+${calculateAdditionalPieces().garterCuff.includes("required") ? '' : `Garter Spring Cuff:  ${calculateAdditionalPieces().garterCuff}`}
+${calculateAdditionalPieces().scuffbandPiece.includes("required") ? '' : `Scuff Band:         ${calculateAdditionalPieces().scuffbandPiece}`}
+
+--- NOTES ---
+- All dimensions include seam allowance
+- Cut with tolerance: ±${document.getElementById('tolerance').value}mm
+- Material: ${materialType}`;
+            
+            // Display cutting instructions
+            document.getElementById('cutting-instructions').textContent = cuttingInstructions;
+            
+            // Generate manufacturing instructions
+            const instructionsList = document.getElementById('instructions-list');
+            instructionsList.innerHTML = '';
+            
+            const steps = [
+                { number: 1, title: "Material Preparation", description: `Select ${materialType} material and verify specifications` },
+                { number: 2, title: "Cutting Operation", description: "Cut pieces according to cutting instructions" }
+            ];
+            
+            // Add base step if included
+            if (includeBase) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Base Preparation", 
+                    description: "Cut circular base piece to specified diameter" 
+                });
+            }
+            
+            steps.push({ 
+                number: steps.length + 1, 
+                title: "Sewing Process", 
+                description: "Assemble main panel with seam allowance" 
+            });
+            
+            // Add base assembly if included
+            if (includeBase) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Base Attachment", 
+                    description: "Sew circular base to bottom of main panel" 
+                });
+            }
+            
+            // Add hardware-specific steps
+            if (selectedComponents.includes("Snapband")) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Snapband Installation", 
+                    description: "Attach stainless steel snapband with profile tape" 
+                });
+            }
+            
+            if (selectedComponents.includes("Garter Spring")) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Cuff Assembly", 
+                    description: "Sew garter spring cuff to main panel" 
+                });
+            }
+            
+            if (selectedFeatures.includes("Scuffband")) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Scuffband Application", 
+                    description: "Attach scuff band to bottom of bag" 
+                });
+            }
+            
+            if (selectedFeatures.includes("Double Base")) {
+                steps.push({ 
+                    number: steps.length + 1, 
+                    title: "Double Base Construction", 
+                    description: "Assemble double-layer base with reinforced stitching" 
+                });
+            }
+            
+            // Add final steps
+            steps.push(
+                { number: steps.length + 1, title: "Quality Control", description: "Inspect dimensions and seam integrity" },
+                { number: steps.length + 1, title: "Packaging", description: "Prepare for shipment" }
+            );
+            
+            // Render steps
+            steps.forEach(step => {
+                const stepEl = document.createElement('div');
+                stepEl.className = 'instruction-step';
+                stepEl.innerHTML = `
+                    <div class="step-number">${step.number}</div>
+                    <div class="step-content">
+                        <h4>${step.title}</h4>
+                        <p>${step.description}</p>
+                    </div>
+                `;
+                instructionsList.appendChild(stepEl);
+            });
+        }
+        
+        // Update calculations display
+        function updateCalculationsDisplay() {
+            const panel = calculatePanelDimensions();
+            const baseDiameter = calculateBaseDiameter(panel.width);
+            const additional = calculateAdditionalPieces();
+            const cellPlate = document.getElementById('cell-plate').value || 150;
+            const includeBase = document.getElementById('include-base').checked;
+            
+            document.getElementById('panel-width').textContent = `${panel.width.toFixed(1)}mm`;
+            document.getElementById('panel-length').textContent = `${panel.length.toFixed(1)}mm (${panel.lengthNote})`;
+            document.getElementById('cell-plate-result').textContent = `${cellPlate}mm`;
+            document.getElementById('garter-cuff').textContent = additional.garterCuff;
+            document.getElementById('scuffband-piece').textContent = additional.scuffbandPiece;
+            
+            // Base diameter
+            document.getElementById('base-diameter').textContent = `${baseDiameter.toFixed(1)}mm`;
+            document.getElementById('diameter-value').textContent = baseDiameter.toFixed(1);
+            
+            // Show/hide base card based on selection
+            document.getElementById('base-diameter-card').style.display = includeBase ? "block" : "none";
+            
+            // Show/hide additional cards based on requirements
+            document.getElementById('garter-cuff-card').style.display = 
+                additional.garterCuff.includes("required") ? "none" : "block";
+            document.getElementById('scuffband-card').style.display = 
+                additional.scuffbandPiece.includes("required") ? "none" : "block";
+        }
+        
+        // Generate design functionality
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            // Show calculations tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('.tab[data-tab="calculations"]').classList.add('active');
+            document.getElementById('calculations-tab').classList.add('active');
+            
+            // Perform calculations
+            updateCalculationsDisplay();
+            generateWorkInstructions();
+            
+            // Show success animation
+            const btn = document.getElementById('generate-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Calculations Complete!';
+            btn.style.background = 'var(--success)';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = '';
+            }, 2000);
+        });
+        
+        // Clear form functionality
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            // Reset input fields
+            document.getElementById('part-name').value = '';
+            document.getElementById('part-id').value = '';
+            document.getElementById('width').value = '300';
+            document.getElementById('length').value = '1200';
+            document.getElementById('cell-plate').value = '150';
+            document.getElementById('tolerance').value = '0.5';
+            document.getElementById('material-weight').value = '500';
+            document.getElementById('scuffband-length').value = '200';
+            
+            // Deselect all components
+            document.querySelectorAll('.component-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Uncheck all features except include-base
+            document.querySelectorAll('.feature-checkbox').forEach(checkbox => {
+                if (checkbox.id !== 'include-base') {
+                    checkbox.checked = false;
+                }
+            });
+            document.querySelectorAll('.feature-item').forEach(item => {
+                if (!item.querySelector('input').id.includes('include-base')) {
+                    item.classList.remove('selected');
+                }
+            });
+            
+            // Hide scuffband input
+            scuffbandInput.style.display = 'none';
+            
+            // Reset calculations
+            document.getElementById('panel-width').textContent = 'Calculating...';
+            document.getElementById('panel-length').textContent = 'Calculating...';
+            
+            // Clear instructions
+            document.getElementById('cutting-instructions').textContent = '// Cutting instructions will be generated here';
+            document.getElementById('instructions-list').innerHTML = '';
+            
+            // Show confirmation
+            const btn = document.getElementById('clear-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Form Cleared!';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 1500);
+        });
+        
+        // Initialize with some sample data
+        document.querySelector('.component-card[data-component="snapband"]').classList.add('selected');
+        document.querySelector('.component-card[data-component="garter"]').classList.add('selected');
+        document.getElementById('scuffband').checked = true;
+        document.querySelector('.feature-item:first-child').classList.add('selected');
+        scuffbandInput.style.display = 'block';
+        document.getElementById('double-base').checked = true;
+        document.querySelector('.feature-item:nth-child(4)').classList.add('selected');
+        
+        // Generate initial calculations
+        document.getElementById('generate-btn').click();
     </script>
 </body>
 </html>
