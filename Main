@@ -716,7 +716,7 @@
                     <div class="formula-display">
                         <strong>Calculation Formulas:</strong><br>
                         Panel Width = (Input Width × 2) + 20mm<br>
-                        Base Diameter = Panel Width / π<br>
+                        Base Diameter = Panel Width / π + 20mm<br>
                         Scuff Band = Input Scuff Length × Panel Width + 0.5mm<br>
                         Garter Spring Cuff = 150mm × Panel Width + 0.5mm
                     </div>
@@ -737,7 +737,7 @@
                             <div class="result-card" id="base-diameter-card">
                                 <h4><i class="fas fa-circle"></i> Base Diameter</h4>
                                 <div class="result-value" id="base-diameter">Calculating...</div>
-                                <div class="result-label">Panel Width / π</div>
+                                <div class="result-label">Panel Width / π + 20mm</div>
                             </div>
                             <div class="result-card">
                                 <h4><i class="fas fa-crop-alt"></i> Cell Plate Size</h4>
